@@ -6,7 +6,7 @@
 <title>Round the Bases!</title>
 <meta name="description" content="An animated baseball lesson for kids: why a banana turn around the bases beats square corners, and why you run straight through first base.">
 <meta property="og:title" content="Round the Bases!">
-<meta property="og:description" content="Three runners, same speed. Watch who's fastest around the bases and to first.">
+<meta property="og:description" content="Race runners around the bases, make the call on 8 kinds of hits, and find the best banana turn.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='6' y='6' width='20' height='20' transform='rotate(45 16 16)' fill='%23c98b56'/%3E%3Ccircle cx='16' cy='16' r='5' fill='%23f2c200'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
@@ -17,52 +17,54 @@
   <header>
     <span class="eyebrow">Baseball base running · 2nd grade edition</span>
     <h1>Round the Bases!</h1>
-    <p class="lead">Four runners. Same speed. One runs square corners, one runs a <b>banana</b>, one runs <b>straight through</b> first, and one <b>slides</b> into second.</p>
+    <p class="lead">Same speed, different paths. Watch runners race, then <b>make the call</b> yourself: run straight through, or run a <b>banana</b>?</p>
   </header>
 
   <section class="stage">
-    <div class="field"><canvas id="cv" role="img" aria-label="A baseball diamond seen from above. A blue runner, Stop-and-Go Sam, runs straight lines and stops at every base. A yellow runner, Banana Bea, curves around each base and keeps her speed. A red runner, Run-Through Ray, sprints straight through first base and stops past it. A purple runner, Slide-In Sid, curves around first and slides into second base."></canvas></div>
+    <div class="left">
+      <div class="field"><canvas id="cv" role="img" aria-label="A baseball diamond seen from above, where runners race around the bases. In the You call it game, the view zooms out to show fielders, the ball and the throw."></canvas></div>
+
+      <div class="hitpanel">
+        <div class="hp-head">
+          <h2>You call it!</h2>
+          <span class="score" id="score">Good calls: 0 of 0</span>
+        </div>
+        <p class="hp-sub">Pick a hit. Watch where the ball goes. Then decide how to run.</p>
+        <div class="hits" id="hits"></div>
+        <p class="callq" id="callPrompt" aria-live="polite">Pick a hit to start.</p>
+        <div class="callrow">
+          <button type="button" class="call through" id="callThrough">Run through first</button>
+          <button type="button" class="call banana" id="callBanana">Banana turn</button>
+        </div>
+      </div>
+    </div>
 
     <div class="board">
-      <h2>Scoreboard</h2>
-      <div class="runner">
-        <span class="swatch sam" aria-hidden="true"></span>
-        <span class="rname">Stop-and-Go Sam</span>
-        <span class="clock" id="tSam">0.0</span>
-        <span class="rhow">Runs square corners</span>
-        <div class="meter"><div class="bar"><div class="fill sam" id="fSam"></div></div><span class="status" id="sSam">Ready…</span></div>
-        <span class="split" id="pSam">To 1st: <b>–</b></span>
+      <div id="raceBoard">
+        <h2>Scoreboard</h2>
+        <div class="runners" id="runners"></div>
+        <div class="controls">
+          <button id="play" type="button">Play ball!</button>
+          <button id="slow" type="button" class="ghost" aria-pressed="false">Slow-mo</button>
+        </div>
+        <p class="result" id="result" aria-live="polite">The bar shows how fast each runner is going right now. Tap On or Off to show or hide a runner, even mid-race.</p>
+        <p class="legend">Watch the footprints. Close together = slow. Far apart = fast!</p>
       </div>
-      <div class="runner">
-        <span class="swatch bea" aria-hidden="true"></span>
-        <span class="rname">Banana Bea</span>
-        <span class="clock" id="tBea">0.0</span>
-        <span class="rhow">Runs a banana curve</span>
-        <div class="meter"><div class="bar"><div class="fill bea" id="fBea"></div></div><span class="status" id="sBea">Ready…</span></div>
-        <span class="split" id="pBea">To 1st: <b>–</b></span>
+
+      <div id="gameBoard" hidden>
+        <h2>Umpire</h2>
+        <p class="ghit" id="gHit">Pick a hit under the field.</p>
+        <div class="duel">
+          <span class="dlab" id="gRunLab">You</span><div class="bar"><div class="fill you" id="gRunBar"></div></div><span class="dt" id="gRunT">–</span>
+          <span class="dlab" id="gBallLab">Throw</span><div class="bar"><div class="fill ball" id="gBallBar"></div></div><span class="dt" id="gBallT">–</span>
+        </div>
+        <p class="bigcall" id="gCall" aria-live="polite">Make your call!</p>
+        <p class="result" id="gWhy"></p>
+        <div class="controls">
+          <button id="gSlow" type="button" class="ghost" aria-pressed="false">Slow-mo</button>
+          <button id="toRace" type="button" class="ghost">Back to the race</button>
+        </div>
       </div>
-      <div class="runner">
-        <span class="swatch ray" aria-hidden="true"></span>
-        <span class="rname">Run-Through Ray</span>
-        <span class="clock" id="tRay">0.0</span>
-        <span class="rhow">Only going to 1st</span>
-        <div class="meter"><div class="bar"><div class="fill ray" id="fRay"></div></div><span class="status" id="sRay">Ready…</span></div>
-        <span class="split" id="pRay">To 1st: <b>–</b></span>
-      </div>
-      <div class="runner">
-        <span class="swatch sid" aria-hidden="true"></span>
-        <span class="rname">Slide-In Sid</span>
-        <span class="clock" id="tSid">0.0</span>
-        <span class="rhow">Going to 2nd, slides in</span>
-        <div class="meter"><div class="bar"><div class="fill sid" id="fSid"></div></div><span class="status" id="sSid">Ready…</span></div>
-        <span class="split" id="pSid">To 2nd: <b>–</b></span>
-      </div>
-      <div class="controls">
-        <button id="play" type="button">Play ball!</button>
-        <button id="slow" type="button" aria-pressed="false">Slow-mo</button>
-      </div>
-      <p class="result" id="result" aria-live="polite">The bar shows how fast each runner is going right now. Clocks count real seconds. Ray's clock stops at first. Sid's stops when he's safe at second.</p>
-      <p class="legend">Watch the footprints. Close together = slow. Far apart = fast!</p>
     </div>
   </section>
 
@@ -85,10 +87,30 @@
     </div>
   </section>
 
+  <section class="lab">
+    <div class="lab-head">
+      <h2>Banana Lab</h2>
+      <p>How wide should your banana be? Slide to change how far you swing out into foul ground before first base. This runner is going to second and sliding in. The white dashed line is the fastest banana.</p>
+    </div>
+    <div class="labgrid">
+      <div class="field"><canvas id="labcv" role="img" aria-label="Path from home to second base, colored by speed: white is full speed, yellow is slowing, red is slow."></canvas></div>
+      <div class="labside">
+        <label for="width" class="wlab">Swing out: <b id="wOut">2 ft</b></label>
+        <input type="range" id="width" min="0" max="20" step="0.5" value="2">
+        <div class="ends"><span>No curve</span><span>Way too wide</span></div>
+        <p class="labmsg" id="labMsg"></p>
+        <p class="labstats">Home to 2nd: <b id="labT">–</b> · Best: <b id="labBest">–</b></p>
+        <svg id="chart" viewBox="0 0 320 170" role="img" aria-label="Chart of seconds to second base for each banana width. Too tight and too wide are both slower; the best is in the middle."></svg>
+        <div class="speedkey"><span><i style="background:#fff"></i>Full speed</span><span><i style="background:#ffd23f"></i>Slowing</span><span><i style="background:#ff4d4d"></i>Slow</span></div>
+        <button type="button" id="labRun">Race the best banana</button>
+      </div>
+    </div>
+  </section>
+
   <section class="tips">
     <h2>Coach's tips</h2>
     <div class="tipgrid">
-      <div class="tip"><span class="tag">Run a banana</span><p>When the ball goes to the outfield, swing out a few steps into foul territory before first base. Then curve back in toward the bag.</p></div>
+      <div class="tip"><span class="tag">Run a banana</span><p>When the ball goes to the outfield, swing out a few steps into foul territory before first base. Then curve back in toward the bag. A few steps is plenty. Too wide wastes steps (ask Wide Wally).</p></div>
       <div class="tip"><span class="tag">Tap the inside corner</span><p>Step on the corner of the base that points at the pitcher's mound. Push off it like a springboard toward the next base.</p></div>
       <div class="tip"><span class="tag">Don't chop your steps</span><p>Keep running in your normal stride. No tiny stutter steps to hit the bag. Lean into the turn like a bike.</p></div>
       <div class="tip"><span class="tag">Eyes up</span><p>Look at the base you are running to, not at the ball. After you touch a base, lift your head and find your coach.</p></div>
@@ -97,7 +119,7 @@
       <div class="tip game"><span class="tag">Practice game: Penguin Feet</span><p>A grown-up stands on the base with heels together, toes out, like a penguin. Their feet cover the bag except the inside corner. Run your banana and tap the only corner you can see!</p></div>
     </div>
     <div class="grownups">
-      <p><b>For grown-ups:</b> runners use a simple physics model. All four runners have the same top speed (19 ft/s) and the same grip. Sharp turns force a lower speed (speed limit grows with turn radius), so the square path brakes to about a quarter speed at each bag. Sid starts his slide 9 ft out and the dirt brakes him harder than running feet can (19 vs 14 ft/s²), so he keeps top speed longer before stopping on the bag. Tips come from youth coaching guides:
+      <p><b>For grown-ups:</b> runners use a simple physics model. Every runner has the same top speed (19 ft/s) and the same grip. Sharp turns force a lower speed (speed limit grows with turn radius), so the square path brakes to about a quarter speed at each bag. Sid starts his slide 9 ft out and the dirt brakes him harder than running feet can (19 vs 14 ft/s²), so he keeps top speed longer before stopping on the bag. Tips come from youth coaching guides:
       <a href="https://img.mlbstatic.com/mlb-images/image/upload/mlb/vcugml0jyyyf6zlb5qvc.pdf" target="_blank" rel="noopener">Texas Rangers Youth Academy</a>,
       <a href="https://www.fatherly.com/play/teach-young-baseball-players-run-bases/" target="_blank" rel="noopener">Fatherly (coach Don Simon)</a>,
       <a href="https://mojo.sport/coachs-corner/the-basics-of-the-base-hit-turn/" target="_blank" rel="noopener">MOJO</a>,
@@ -110,6 +132,11 @@
 </div>
 
 <script src="js/physics.js"></script>
-<script src="js/app.js"></script>
+<script src="js/hits.js"></script>
+<script src="js/field.js"></script>
+<script src="js/stage.js"></script>
+<script src="js/race.js"></script>
+<script src="js/game.js"></script>
+<script src="js/lab.js"></script>
 </body>
 </html>

@@ -55,26 +55,45 @@ function catmull(pts,segs){
   }
   out.push(pts[pts.length-1]); return out;
 }
-function bananaPath(){
+// Banana leg waypoints from base A to base B. `w` = how far (ft) the runner swings out into foul ground.
+// 0 = runs right down the line, then has to turn sharply at the bag.
+const BANANA_W=7.5;
+function bananaLeg(A,B,w){
+  const d=norm(sub(B,A)), n=[d[1],-d[0]], L=90, f=w/BANANA_W;
+  const at=(t,o)=>add(A,add(mul(d,L*t),mul(n,o*f)));
+  return [at(.42,1),at(.68,6.5),at(.86,7.5),at(.95,4.8),add(B,mul(norm(sub(MOUND,B)),1.2))];
+}
+function bananaPath(w){
+  w=w==null?BANANA_W:w;
   const wp=[[0,0]];
-  for(let i=0;i<4;i++){
-    const A=BASES[i], B=BASES[(i+1)%4], d=norm(sub(B,A)), n=[d[1],-d[0]], L=90;
-    const at=(f,o)=>add(A,add(mul(d,L*f),mul(n,o)));
-    if(i<3){
-      wp.push(at(.42,1),at(.68,6.5),at(.86,7.5),at(.95,4.8));
-      wp.push(add(B,mul(norm(sub(MOUND,B)),1.2)));
-    } else wp.push(at(.5,0),B);
-  }
-  return resample(catmull(wp,40));
+  for(let i=0;i<3;i++) wp.push(...bananaLeg(BASES[i],BASES[i+1],w));
+  wp.push([0,45],[0,0]);
+  return resample(catmull(clean(wp),40));
 }
 function rayPath(){ return resample([[0,0],[106,0]]); }
-// Sid: banana around 1st, straight to 2nd, feet reach the front edge of the bag.
-function sidPath(){
-  const A=BASES[0], B=BASES[1], d=norm(sub(B,A)), n=[d[1],-d[0]], L=90;
-  const at=(f,o)=>add(A,add(mul(d,L*f),mul(n,o)));
-  const wp=[[0,0],at(.42,1),at(.68,6.5),at(.86,7.5),at(.95,4.8),add(B,mul(norm(sub(MOUND,B)),1.2)),[90.6,40],[90.2,65],[90,88.2]];
-  return resample(catmull(wp,40));
+// Banana around 1st, straight to 2nd; feet reach the front edge of the bag.
+function sidPath(w){
+  w=w==null?BANANA_W:w;
+  return resample(catmull(clean([[0,0],...bananaLeg(BASES[0],BASES[1],w),[90.6,40],[90.2,65],[90,88.2]]),40));
 }
+// Banana around 1st, then a few hard steps toward 2nd and back to the bag (a single, "rounding" first).
+function roundPath(w){
+  w=w==null?BANANA_W:w;
+  return resample(catmull(clean([[0,0],...bananaLeg(BASES[0],BASES[1],w),[90.8,8],[91,14]]),40));
+}
+// Ran through 1st, stopped, then heads for 2nd from a standstill.
+function runThroughThen2nd(){
+  const a=profile(rayPath(),true), b=profile(resample([[106,0],[98,44],[90,88.2]]),true,SLIDE_LEN);
+  return chain(a,b);
+}
+function chain(a,b){
+  const off=a.pts.length-1;
+  return {pts:a.pts.concat(b.pts.slice(1)), v:a.v.concat(b.v.slice(1)), t:a.t.concat(b.t.slice(1).map(x=>x+a.T)),
+    T:a.T+b.T, len:a.len+b.len, feet:a.feet.concat(b.feet.map(f=>({t:f.t+a.T,p:f.p}))),
+    first:a.first, firstV:a.firstV, slideIdx:off+b.slideIdx, slideT:a.T+b.slideT, slideV:b.slideV};
+}
+// Drop waypoints that sit on top of each other (w=0 makes some collinear duplicates).
+function clean(wp){ return wp.filter((p,i)=>i===0||dist(p,wp[i-1])>0.5); }
 function profile(pts,stop,slideLen){
   slideLen=slideLen||0;
   const n=pts.length, lim=new Array(n).fill(VMAX), k=4;
@@ -105,7 +124,7 @@ function at(R,time){
 
 
 const RTB = { VMAX, ACC, DEC, ALAT, DS, STEP, SLIDE_LEN, SLIDE_DEC, BASES, MOUND, add, sub, mul, dist, norm,
-  resample, squarePath, bananaPath, rayPath, sidPath, profile, at };
+  BANANA_W, resample, bananaLeg, squarePath, bananaPath, rayPath, sidPath, roundPath, runThroughThen2nd, chain, profile, at };
 if (typeof module !== "undefined" && module.exports) module.exports = RTB;
 root.RTB = RTB;
 })(typeof globalThis !== "undefined" ? globalThis : this);
