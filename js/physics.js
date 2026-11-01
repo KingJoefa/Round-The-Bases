@@ -9,6 +9,8 @@
 (function (root) {
 "use strict";
 const VMAX=19, ACC=9, DEC=14, ALAT=16, DS=0.25, STEP=0.33;
+// Sliding: start ~9 ft before the bag (Baseball Canada says 9-10 ft); dirt friction brakes harder than feet.
+const SLIDE_LEN=9, SLIDE_DEC=19;
 const BASES=[[0,0],[90,0],[90,90],[0,90]];
 const MOUND=[42.8,42.8];
 const add=(a,b)=>[a[0]+b[0],a[1]+b[1]], sub=(a,b)=>[a[0]-b[0],a[1]-b[1]], mul=(a,s)=>[a[0]*s,a[1]*s];
@@ -66,7 +68,15 @@ function bananaPath(){
   return resample(catmull(wp,40));
 }
 function rayPath(){ return resample([[0,0],[106,0]]); }
-function profile(pts,stop){
+// Sid: banana around 1st, straight to 2nd, feet reach the front edge of the bag.
+function sidPath(){
+  const A=BASES[0], B=BASES[1], d=norm(sub(B,A)), n=[d[1],-d[0]], L=90;
+  const at=(f,o)=>add(A,add(mul(d,L*f),mul(n,o)));
+  const wp=[[0,0],at(.42,1),at(.68,6.5),at(.86,7.5),at(.95,4.8),add(B,mul(norm(sub(MOUND,B)),1.2)),[90.6,40],[90.2,65],[90,88.2]];
+  return resample(catmull(wp,40));
+}
+function profile(pts,stop,slideLen){
+  slideLen=slideLen||0;
   const n=pts.length, lim=new Array(n).fill(VMAX), k=4;
   for(let i=k;i<n-k;i++){
     const p=pts[i-k],q=pts[i],r=pts[i+k];
@@ -76,13 +86,14 @@ function profile(pts,stop){
   if(stop) lim[n-1]=0;
   const v=new Array(n); v[0]=0;
   for(let i=1;i<n;i++) v[i]=Math.min(lim[i],Math.sqrt(v[i-1]*v[i-1]+2*ACC*DS));
-  for(let i=n-2;i>0;i--) v[i]=Math.min(v[i],Math.sqrt(v[i+1]*v[i+1]+2*DEC*DS));
+  const slideIdx=slideLen?n-1-Math.round(slideLen/DS):n;
+  for(let i=n-2;i>0;i--){const dec=i>=slideIdx?SLIDE_DEC:DEC; v[i]=Math.min(v[i],Math.sqrt(v[i+1]*v[i+1]+2*dec*DS));}
   const t=new Array(n); t[0]=0;
   for(let i=1;i<n;i++) t[i]=t[i-1]+DS/Math.max((v[i]+v[i-1])/2,0.05);
   const feet=[]; let next=STEP;
-  for(let i=1;i<n;i++) if(t[i]>=next){feet.push({t:t[i],p:pts[i]}); next+=STEP;}
+  for(let i=1;i<slideIdx&&i<n;i++) if(t[i]>=next){feet.push({t:t[i],p:pts[i]}); next+=STEP;}
   let bi=0,bd=1e9; pts.forEach((p,i)=>{const d=dist(p,BASES[1]); if(d<bd){bd=d;bi=i;}});
-  return {pts,v,t,T:t[n-1],len:(n-1)*DS,feet,first:t[bi],firstV:v[bi]};
+  return {pts,v,t,T:t[n-1],len:(n-1)*DS,feet,first:t[bi],firstV:v[bi],slideIdx,slideT:slideIdx<n?t[slideIdx]:Infinity,slideV:slideIdx<n?v[slideIdx]:0};
 }
 function at(R,time){
   if(time>=R.T){const i=R.pts.length-1;return {p:R.pts[i],v:0,i,done:true};}
@@ -93,8 +104,8 @@ function at(R,time){
 }
 
 
-const RTB = { VMAX, ACC, DEC, ALAT, DS, STEP, BASES, MOUND, add, sub, mul, dist, norm,
-  resample, squarePath, bananaPath, rayPath, profile, at };
+const RTB = { VMAX, ACC, DEC, ALAT, DS, STEP, SLIDE_LEN, SLIDE_DEC, BASES, MOUND, add, sub, mul, dist, norm,
+  resample, squarePath, bananaPath, rayPath, sidPath, profile, at };
 if (typeof module !== "undefined" && module.exports) module.exports = RTB;
 root.RTB = RTB;
 })(typeof globalThis !== "undefined" ? globalThis : this);

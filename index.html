@@ -17,11 +17,11 @@
   <header>
     <span class="eyebrow">Baseball base running · 2nd grade edition</span>
     <h1>Round the Bases!</h1>
-    <p class="lead">Three runners. Same speed. One runs square corners, one runs a <b>banana</b>, and one only needs first base, so he runs <b>straight through</b> it.</p>
+    <p class="lead">Four runners. Same speed. One runs square corners, one runs a <b>banana</b>, one runs <b>straight through</b> first, and one <b>slides</b> into second.</p>
   </header>
 
   <section class="stage">
-    <div class="field"><canvas id="cv" role="img" aria-label="A baseball diamond seen from above. A blue runner, Stop-and-Go Sam, runs straight lines and stops at every base. A yellow runner, Banana Bea, curves around each base and keeps her speed. A red runner, Run-Through Ray, sprints straight through first base and stops past it."></canvas></div>
+    <div class="field"><canvas id="cv" role="img" aria-label="A baseball diamond seen from above. A blue runner, Stop-and-Go Sam, runs straight lines and stops at every base. A yellow runner, Banana Bea, curves around each base and keeps her speed. A red runner, Run-Through Ray, sprints straight through first base and stops past it. A purple runner, Slide-In Sid, curves around first and slides into second base."></canvas></div>
 
     <div class="board">
       <h2>Scoreboard</h2>
@@ -49,11 +49,19 @@
         <div class="meter"><div class="bar"><div class="fill ray" id="fRay"></div></div><span class="status" id="sRay">Ready…</span></div>
         <span class="split" id="pRay">To 1st: <b>–</b></span>
       </div>
+      <div class="runner">
+        <span class="swatch sid" aria-hidden="true"></span>
+        <span class="rname">Slide-In Sid</span>
+        <span class="clock" id="tSid">0.0</span>
+        <span class="rhow">Going to 2nd, slides in</span>
+        <div class="meter"><div class="bar"><div class="fill sid" id="fSid"></div></div><span class="status" id="sSid">Ready…</span></div>
+        <span class="split" id="pSid">To 2nd: <b>–</b></span>
+      </div>
       <div class="controls">
         <button id="play" type="button">Play ball!</button>
         <button id="slow" type="button" aria-pressed="false">Slow-mo</button>
       </div>
-      <p class="result" id="result" aria-live="polite">The bar shows how fast each runner is going right now. Clocks count real seconds. Ray's clock stops when he touches first.</p>
+      <p class="result" id="result" aria-live="polite">The bar shows how fast each runner is going right now. Clocks count real seconds. Ray's clock stops at first. Sid's stops when he's safe at second.</p>
       <p class="legend">Watch the footprints. Close together = slow. Far apart = fast!</p>
     </div>
   </section>
@@ -64,6 +72,7 @@
       <p>Try running super fast and then turning sharp, like the corner of a square. Your feet slide! You have to slow way down, turn, then speed up again.</p>
       <p>A curve is a gentle turn. Bea leans in and keeps running fast the whole time. She runs a little <b>more</b> ground than Sam, but she never has to stop.</p>
       <p>But if you only need first base, a straight line is the shortest and fastest way there. Ray never turns, so he never slows down before the bag. He hits it at full speed and stops <b>after</b> it. He's the first one to first base!</p>
+      <p>Second base is different. If you run past it, you can be tagged out. Sid runs fast almost all the way, then slides. Sliding on the dirt slows him down faster than his feet could, so he stops right on the bag.</p>
     </div>
     <div class="panel">
       <h2>Read the footprints</h2>
@@ -72,7 +81,7 @@
         <span><span class="dots" style="gap:3px"><i></i><i></i><i></i><i></i><i></i></span> slow</span>
         <span><span class="dots" style="gap:18px"><i></i><i></i><i></i></span> fast</span>
       </div>
-      <p>Look at Sam's footprints at each base. They bunch up. That's him putting on the brakes! Ray's footprints only bunch up <b>after</b> first base, once he's already safe.</p>
+      <p>Look at Sam's footprints at each base. They bunch up. That's him putting on the brakes! Ray's footprints only bunch up <b>after</b> first base, once he's already safe. Sid has no footprints at the end, just a long skid mark in the dirt from his slide.</p>
     </div>
   </section>
 
@@ -84,15 +93,18 @@
       <div class="tip"><span class="tag">Don't chop your steps</span><p>Keep running in your normal stride. No tiny stutter steps to hit the bag. Lean into the turn like a bike.</p></div>
       <div class="tip"><span class="tag">Eyes up</span><p>Look at the base you are running to, not at the ball. After you touch a base, lift your head and find your coach.</p></div>
       <div class="tip warn"><span class="tag">Ground ball? Run straight!</span><p>If the ball stays in the infield, don't curve. Run <b>through</b> first base as fast as you can, like crossing a finish line.</p></div>
+      <div class="tip"><span class="tag">Slide into 2nd and 3rd</span><p>You can run through first base, but not second or third. Start your slide about 9 big feet before the bag. Go feet first, and let the dirt stop you right on the base.</p></div>
       <div class="tip game"><span class="tag">Practice game: Penguin Feet</span><p>A grown-up stands on the base with heels together, toes out, like a penguin. Their feet cover the bag except the inside corner. Run your banana and tap the only corner you can see!</p></div>
     </div>
     <div class="grownups">
-      <p><b>For grown-ups:</b> runners use a simple physics model. All three runners have the same top speed (19 ft/s) and the same grip. Sharp turns force a lower speed (speed limit grows with turn radius), so the square path brakes to about a quarter speed at each bag. Tips come from youth coaching guides:
+      <p><b>For grown-ups:</b> runners use a simple physics model. All four runners have the same top speed (19 ft/s) and the same grip. Sharp turns force a lower speed (speed limit grows with turn radius), so the square path brakes to about a quarter speed at each bag. Sid starts his slide 9 ft out and the dirt brakes him harder than running feet can (19 vs 14 ft/s²), so he keeps top speed longer before stopping on the bag. Tips come from youth coaching guides:
       <a href="https://img.mlbstatic.com/mlb-images/image/upload/mlb/vcugml0jyyyf6zlb5qvc.pdf" target="_blank" rel="noopener">Texas Rangers Youth Academy</a>,
       <a href="https://www.fatherly.com/play/teach-young-baseball-players-run-bases/" target="_blank" rel="noopener">Fatherly (coach Don Simon)</a>,
       <a href="https://mojo.sport/coachs-corner/the-basics-of-the-base-hit-turn/" target="_blank" rel="noopener">MOJO</a>,
       <a href="https://www.veo.com/article/baseball-base-running-drills" target="_blank" rel="noopener">Veo</a>,
-      <a href="https://www.dugoutcaptain.com/drill/base-hit-turns/" target="_blank" rel="noopener">Dugout Captain</a>.</p>
+      <a href="https://www.dugoutcaptain.com/drill/base-hit-turns/" target="_blank" rel="noopener">Dugout Captain</a>,
+      <a href="https://www.baseball.ca/running-the-bases" target="_blank" rel="noopener">Baseball Canada</a>,
+      <a href="https://www.active.com/baseball/articles/sliding-fundamentals-for-baseball-players?page=2" target="_blank" rel="noopener">ACTIVE (sliding fundamentals)</a>.</p>
     </div>
   </section>
 </div>

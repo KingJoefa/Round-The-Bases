@@ -1,18 +1,18 @@
 /* Layout: playful kids' explainer — big title, field + scoreboard side by side, then "why" and coach tips */
 :root{
   --bg:#e9f3f8; --fg:#12324a; --muted:#4b6578; --card:#ffffff; --line:#c9dde8;
-  --clay:#c8643b; --ray:#d93a2f; --sam:#2f6fe4; --bea:#f2c200; --bea-ink:#5a4300;
+  --clay:#c8643b; --ray:#d93a2f; --sid:#7a3fd1; --sam:#2f6fe4; --bea:#f2c200; --bea-ink:#5a4300;
   --board:#174a32; --board-fg:#f3f7ee; --board-dim:#a9c7b2; --track:#0e3322;
   --display:"Lilita One","Arial Rounded MT Bold","Trebuchet MS",system-ui,sans-serif;
   --body:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#0c1a24; --fg:#e6f0f5; --muted:#9ab3c3; --card:#132836; --line:#24404f;
-  --clay:#e9845a; --ray:#ff6f61; --sam:#6b9cff; --bea:#ffd52e; --bea-ink:#ffe68a;
+  --clay:#e9845a; --ray:#ff6f61; --sid:#b493ff; --sam:#6b9cff; --bea:#ffd52e; --bea-ink:#ffe68a;
   --board:#0f3322; --board-fg:#f0f6ec; --board-dim:#8fb39a; --track:#082015; color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#0c1a24; --fg:#e6f0f5; --muted:#9ab3c3; --card:#132836; --line:#24404f;
-  --clay:#e9845a; --ray:#ff6f61; --sam:#6b9cff; --bea:#ffd52e; --bea-ink:#ffe68a;
+  --clay:#e9845a; --ray:#ff6f61; --sid:#b493ff; --sam:#6b9cff; --bea:#ffd52e; --bea-ink:#ffe68a;
   --board:#0f3322; --board-fg:#f0f6ec; --board-dim:#8fb39a; --track:#082015; color-scheme:dark}
 
 *{box-sizing:border-box}
@@ -36,18 +36,18 @@ canvas{display:block;width:100%;height:auto;aspect-ratio:1/1;max-width:100%}
 
 .board{background:var(--board);color:var(--board-fg);border-radius:22px;padding:22px;display:flex;flex-direction:column;gap:14px;border:4px solid var(--track)}
 .board h2{font-size:1.6rem}
-.runner{display:grid;grid-template-columns:auto 1fr auto;gap:4px 12px;align-items:center;background:var(--track);border-radius:14px;padding:14px}
+.runner{display:grid;grid-template-columns:auto 1fr auto;gap:4px 12px;align-items:center;background:var(--track);border-radius:14px;padding:12px 14px}
 .swatch{width:26px;height:26px;border-radius:50%;border:3px solid #fff;grid-row:span 2}
-.swatch.ray{background:var(--ray)} .swatch.sam{background:var(--sam)} .swatch.bea{background:var(--bea);border-color:#3a2c00}
+.swatch.ray{background:var(--ray)} .swatch.sid{background:var(--sid)} .swatch.sam{background:var(--sam)} .swatch.bea{background:var(--bea);border-color:#3a2c00}
 .rname{font-family:var(--display);font-size:1.3rem}
 .rhow{font-size:.9rem;color:var(--board-dim);grid-column:2}
 .split{grid-column:1 / -1;font-size:.85rem;color:var(--board-dim);font-variant-numeric:tabular-nums}
 .split b{color:var(--board-fg)}
 .clock{font-family:var(--display);font-size:2rem;font-variant-numeric:tabular-nums;grid-row:1 / span 2;grid-column:3;min-width:3.6ch;text-align:right}
-.meter{grid-column:1 / -1;display:flex;flex-direction:column;gap:4px;margin-top:6px}
+.meter{grid-column:1 / -1;display:flex;flex-direction:column;gap:3px;margin-top:4px}
 .bar{height:14px;border-radius:7px;background:rgba(255,255,255,.12);overflow:hidden}
 .fill{height:100%;width:0;border-radius:7px;transition:width .08s linear}
-.fill.ray{background:var(--ray)} .fill.sam{background:var(--sam)} .fill.bea{background:var(--bea)}
+.fill.ray{background:var(--ray)} .fill.sid{background:var(--sid)} .fill.sam{background:var(--sam)} .fill.bea{background:var(--bea)}
 .status{font-size:.9rem;color:var(--board-dim);font-weight:700}
 .controls{display:flex;gap:10px;flex-wrap:wrap}
 button{font-family:var(--display);font-size:1.25rem;border:0;border-radius:999px;padding:12px 24px;cursor:pointer;min-height:48px}

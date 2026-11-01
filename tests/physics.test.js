@@ -42,3 +42,25 @@ test("times stay in a believable youth range", () => {
   assert.ok(ray.first > 4 && ray.first < 8);
   assert.ok(sam.T > 18 && sam.T < 30);
 });
+
+const sid = RTB.profile(RTB.sidPath(), true, RTB.SLIDE_LEN);
+const sidStandUp = RTB.profile(RTB.sidPath(), true, 0);
+
+test("Sid stops on second base, not past it", () => {
+  assert.ok(RTB.dist(sid.pts.at(-1), RTB.BASES[2]) < 2.5);
+  assert.equal(sid.v.at(-1), 0);
+});
+
+test("Sid starts his slide near top speed, about 9 ft out", () => {
+  assert.ok(sid.slideV > RTB.VMAX * 0.9);
+  const ftOut = (sid.pts.length - 1 - sid.slideIdx) * RTB.DS;
+  assert.ok(Math.abs(ftOut - RTB.SLIDE_LEN) < 0.5);
+});
+
+test("sliding beats stopping on your feet", () => {
+  assert.ok(sid.T < sidStandUp.T);
+});
+
+test("no footprints during the slide (it's a skid mark)", () => {
+  assert.ok(sid.feet.every((f) => f.t < sid.slideT));
+});
