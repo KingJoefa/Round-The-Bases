@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Round the Bases!</title>
+<meta name="description" content="An animated baseball lesson for kids: why a banana turn around the bases beats square corners, and why you run straight through first base.">
+<meta property="og:title" content="Round the Bases!">
+<meta property="og:description" content="Three runners, same speed. Watch who's fastest around the bases and to first.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='6' y='6' width='20' height='20' transform='rotate(45 16 16)' fill='%23c98b56'/%3E%3Ccircle cx='16' cy='16' r='5' fill='%23f2c200'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="eyebrow">Baseball base running · 2nd grade edition</span>
+    <h1>Round the Bases!</h1>
+    <p class="lead">Three runners. Same speed. One runs square corners, one runs a <b>banana</b>, and one only needs first base, so he runs <b>straight through</b> it.</p>
+  </header>
+
+  <section class="stage">
+    <div class="field"><canvas id="cv" role="img" aria-label="A baseball diamond seen from above. A blue runner, Stop-and-Go Sam, runs straight lines and stops at every base. A yellow runner, Banana Bea, curves around each base and keeps her speed. A red runner, Run-Through Ray, sprints straight through first base and stops past it."></canvas></div>
+
+    <div class="board">
+      <h2>Scoreboard</h2>
+      <div class="runner">
+        <span class="swatch sam" aria-hidden="true"></span>
+        <span class="rname">Stop-and-Go Sam</span>
+        <span class="clock" id="tSam">0.0</span>
+        <span class="rhow">Runs square corners</span>
+        <div class="meter"><div class="bar"><div class="fill sam" id="fSam"></div></div><span class="status" id="sSam">Ready…</span></div>
+        <span class="split" id="pSam">To 1st: <b>–</b></span>
+      </div>
+      <div class="runner">
+        <span class="swatch bea" aria-hidden="true"></span>
+        <span class="rname">Banana Bea</span>
+        <span class="clock" id="tBea">0.0</span>
+        <span class="rhow">Runs a banana curve</span>
+        <div class="meter"><div class="bar"><div class="fill bea" id="fBea"></div></div><span class="status" id="sBea">Ready…</span></div>
+        <span class="split" id="pBea">To 1st: <b>–</b></span>
+      </div>
+      <div class="runner">
+        <span class="swatch ray" aria-hidden="true"></span>
+        <span class="rname">Run-Through Ray</span>
+        <span class="clock" id="tRay">0.0</span>
+        <span class="rhow">Only going to 1st</span>
+        <div class="meter"><div class="bar"><div class="fill ray" id="fRay"></div></div><span class="status" id="sRay">Ready…</span></div>
+        <span class="split" id="pRay">To 1st: <b>–</b></span>
+      </div>
+      <div class="controls">
+        <button id="play" type="button">Play ball!</button>
+        <button id="slow" type="button" aria-pressed="false">Slow-mo</button>
+      </div>
+      <p class="result" id="result" aria-live="polite">The bar shows how fast each runner is going right now. Clocks count real seconds. Ray's clock stops when he touches first.</p>
+      <p class="legend">Watch the footprints. Close together = slow. Far apart = fast!</p>
+    </div>
+  </section>
+
+  <section class="why">
+    <div class="panel">
+      <h2>Why does the banana win?</h2>
+      <p>Try running super fast and then turning sharp, like the corner of a square. Your feet slide! You have to slow way down, turn, then speed up again.</p>
+      <p>A curve is a gentle turn. Bea leans in and keeps running fast the whole time. She runs a little <b>more</b> ground than Sam, but she never has to stop.</p>
+      <p>But if you only need first base, a straight line is the shortest and fastest way there. Ray never turns, so he never slows down before the bag. He hits it at full speed and stops <b>after</b> it. He's the first one to first base!</p>
+    </div>
+    <div class="panel">
+      <h2>Read the footprints</h2>
+      <p>Each runner leaves a footprint every third of a second.</p>
+      <div class="feet">
+        <span><span class="dots" style="gap:3px"><i></i><i></i><i></i><i></i><i></i></span> slow</span>
+        <span><span class="dots" style="gap:18px"><i></i><i></i><i></i></span> fast</span>
+      </div>
+      <p>Look at Sam's footprints at each base. They bunch up. That's him putting on the brakes! Ray's footprints only bunch up <b>after</b> first base, once he's already safe.</p>
+    </div>
+  </section>
+
+  <section class="tips">
+    <h2>Coach's tips</h2>
+    <div class="tipgrid">
+      <div class="tip"><span class="tag">Run a banana</span><p>When the ball goes to the outfield, swing out a few steps into foul territory before first base. Then curve back in toward the bag.</p></div>
+      <div class="tip"><span class="tag">Tap the inside corner</span><p>Step on the corner of the base that points at the pitcher's mound. Push off it like a springboard toward the next base.</p></div>
+      <div class="tip"><span class="tag">Don't chop your steps</span><p>Keep running in your normal stride. No tiny stutter steps to hit the bag. Lean into the turn like a bike.</p></div>
+      <div class="tip"><span class="tag">Eyes up</span><p>Look at the base you are running to, not at the ball. After you touch a base, lift your head and find your coach.</p></div>
+      <div class="tip warn"><span class="tag">Ground ball? Run straight!</span><p>If the ball stays in the infield, don't curve. Run <b>through</b> first base as fast as you can, like crossing a finish line.</p></div>
+      <div class="tip game"><span class="tag">Practice game: Penguin Feet</span><p>A grown-up stands on the base with heels together, toes out, like a penguin. Their feet cover the bag except the inside corner. Run your banana and tap the only corner you can see!</p></div>
+    </div>
+    <div class="grownups">
+      <p><b>For grown-ups:</b> runners use a simple physics model. All three runners have the same top speed (19 ft/s) and the same grip. Sharp turns force a lower speed (speed limit grows with turn radius), so the square path brakes to about a quarter speed at each bag. Tips come from youth coaching guides:
+      <a href="https://img.mlbstatic.com/mlb-images/image/upload/mlb/vcugml0jyyyf6zlb5qvc.pdf" target="_blank" rel="noopener">Texas Rangers Youth Academy</a>,
+      <a href="https://www.fatherly.com/play/teach-young-baseball-players-run-bases/" target="_blank" rel="noopener">Fatherly (coach Don Simon)</a>,
+      <a href="https://mojo.sport/coachs-corner/the-basics-of-the-base-hit-turn/" target="_blank" rel="noopener">MOJO</a>,
+      <a href="https://www.veo.com/article/baseball-base-running-drills" target="_blank" rel="noopener">Veo</a>,
+      <a href="https://www.dugoutcaptain.com/drill/base-hit-turns/" target="_blank" rel="noopener">Dugout Captain</a>.</p>
+    </div>
+  </section>
+</div>
+
+<script src="js/physics.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

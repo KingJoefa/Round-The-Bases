@@ -1,0 +1,12 @@
+{
+  "name": "round-the-bases",
+  "version": "1.0.0",
+  "description": "Animated baseball base-running lesson for kids: banana turns vs. square corners vs. running through first.",
+  "private": true,
+  "scripts": {
+    "start": "npx --yes serve@14.2.4 .",
+    "test": "node --test"
+  },
+  "engines": { "node": ">=18" },
+  "license": "MIT"
+}
