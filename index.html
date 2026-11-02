@@ -6,7 +6,7 @@
 <title>Round the Bases!</title>
 <meta name="description" content="An animated baseball lesson for kids: why a banana turn around the bases beats square corners, and why you run straight through first base.">
 <meta property="og:title" content="Round the Bases!">
-<meta property="og:description" content="Race runners around the bases, make the call on 8 kinds of hits, and find the best banana turn.">
+<meta property="og:description" content="Race runners around the bases, make the call on 8 kinds of hits, run the bases yourself with the arrow keys, and find the best banana turn.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='6' y='6' width='20' height='20' transform='rotate(45 16 16)' fill='%23c98b56'/%3E%3Ccircle cx='16' cy='16' r='5' fill='%23f2c200'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
@@ -25,16 +25,46 @@
       <div class="field"><canvas id="cv" role="img" aria-label="A baseball diamond seen from above, where runners race around the bases. In the You call it game, the view zooms out to show fielders, the ball and the throw."></canvas></div>
 
       <div class="hitpanel">
-        <div class="hp-head">
-          <h2>You call it!</h2>
-          <span class="score" id="score">Good calls: 0 of 0</span>
+        <div class="tabs" role="tablist" aria-label="Game modes">
+          <button type="button" role="tab" id="tabCall" aria-selected="true" aria-controls="panelCall">You call it</button>
+          <button type="button" role="tab" id="tabRun" aria-selected="false" aria-controls="panelRun">Run it yourself</button>
         </div>
-        <p class="hp-sub">Pick a hit. Watch where the ball goes. Then decide how to run.</p>
-        <div class="hits" id="hits"></div>
-        <p class="callq" id="callPrompt" aria-live="polite">Pick a hit to start.</p>
-        <div class="callrow">
-          <button type="button" class="call through" id="callThrough">Run through first</button>
-          <button type="button" class="call banana" id="callBanana">Banana turn</button>
+
+        <div id="panelCall" role="tabpanel" aria-labelledby="tabCall" class="tabpanel">
+          <div class="hp-head">
+            <h2>You call it!</h2>
+            <span class="score" id="score">Good calls: 0 of 0</span>
+          </div>
+          <p class="hp-sub">Pick a hit. Watch where the ball goes. Then decide how to run.</p>
+          <div class="hits" id="hits"></div>
+          <p class="callq" id="callPrompt" aria-live="polite">Pick a hit to start.</p>
+          <div class="callrow">
+            <button type="button" class="call through" id="callThrough">Run through first</button>
+            <button type="button" class="call banana" id="callBanana">Banana turn</button>
+          </div>
+        </div>
+
+        <div id="panelRun" role="tabpanel" aria-labelledby="tabRun" class="tabpanel" hidden>
+          <div class="hp-head">
+            <h2>Run it yourself!</h2>
+            <span class="score" id="inning">Outs ○○○ · Runs 0</span>
+          </div>
+          <div class="runrow">
+            <button type="button" class="call banana" id="batter">Batter up!</button>
+            <button type="button" class="tog" id="coachHelp" role="switch" aria-checked="true">Coach help: On</button>
+            <button type="button" class="tog" id="rookie" role="switch" aria-checked="false">Rookie speed: Off</button>
+          </div>
+          <div class="dpad" aria-label="Touch controls">
+            <button type="button" data-k="up" aria-label="Run up, toward 2nd">▲</button>
+            <button type="button" data-k="left" aria-label="Run left, toward 3rd">◀</button>
+            <button type="button" data-k="slide" class="slidebtn">Slide</button>
+            <button type="button" data-k="right" aria-label="Run right, toward 1st">▶</button>
+            <button type="button" data-k="down" aria-label="Run down, toward home">▼</button>
+          </div>
+          <p class="hp-sub">You're the batter. Every hit is a surprise. Run the bases with the arrow keys, touch every base in order, and listen to your coach!</p>
+          <div class="keys" aria-label="Keyboard controls">
+            <span><kbd>→</kbd> to 1st</span><span><kbd>↑</kbd> to 2nd</span><span><kbd>←</kbd> to 3rd</span><span><kbd>↓</kbd> home</span><span><kbd>Space</kbd> slide</span>
+          </div>
         </div>
       </div>
     </div>
@@ -49,6 +79,20 @@
         </div>
         <p class="result" id="result" aria-live="polite">The bar shows how fast each runner is going right now. Tap On or Off to show or hide a runner, even mid-race.</p>
         <p class="legend">Watch the footprints. Close together = slow. Far apart = fast!</p>
+      </div>
+
+      <div id="playBoard" hidden>
+        <h2>Base coach</h2>
+        <p class="coachline" id="pCoach" aria-live="polite">Press Batter up! (or Space) to hit.</p>
+        <p class="ghit" id="pHit">Every at-bat is a surprise hit.</p>
+        <div class="duel">
+          <span class="dlab">Your speed</span><div class="bar"><div class="fill you" id="pSpd"></div></div><span class="dt" id="pSpdT">0</span>
+        </div>
+        <div class="basechips" id="pBases"><span data-b="1">1st</span><span data-b="2">2nd</span><span data-b="3">3rd</span><span data-b="4">Home</span></div>
+        <p class="bigcall" id="pCall"></p>
+        <p class="result" id="pWhy">Touch each base in order. Bases light up when you touch them.</p>
+        <div class="tally"><span>Outs <b id="pOuts">○○○</b></span><span>Runs <b id="pRuns">0</b></span><span>Bases <b id="pTot">0</b></span></div>
+        <div class="controls"><button id="toRace2" type="button" class="ghost">Back to the race</button></div>
       </div>
 
       <div id="gameBoard" hidden>
@@ -116,6 +160,7 @@
       <div class="tip"><span class="tag">Eyes up</span><p>Look at the base you are running to, not at the ball. After you touch a base, lift your head and find your coach.</p></div>
       <div class="tip warn"><span class="tag">Ground ball? Run straight!</span><p>If the ball stays in the infield, don't curve. Run <b>through</b> first base as fast as you can, like crossing a finish line.</p></div>
       <div class="tip"><span class="tag">Slide into 2nd and 3rd</span><p>You can run through first base, but not second or third. Start your slide about 9 big feet before the bag. Go feet first, and let the dirt stop you right on the base.</p></div>
+      <div class="tip"><span class="tag">Listen to your base coaches</span><p>The 1st-base coach helps you until you reach 2nd. Then look to the 3rd-base coach. Go when they say go, stop when they say stop. And touch every base, or it doesn't count!</p></div>
       <div class="tip game"><span class="tag">Practice game: Penguin Feet</span><p>A grown-up stands on the base with heels together, toes out, like a penguin. Their feet cover the bag except the inside corner. Run your banana and tap the only corner you can see!</p></div>
     </div>
     <div class="grownups">
@@ -133,10 +178,12 @@
 
 <script src="js/physics.js"></script>
 <script src="js/hits.js"></script>
+<script src="js/playsim.js"></script>
 <script src="js/field.js"></script>
 <script src="js/stage.js"></script>
 <script src="js/race.js"></script>
 <script src="js/game.js"></script>
+<script src="js/play.js"></script>
 <script src="js/lab.js"></script>
 </body>
 </html>

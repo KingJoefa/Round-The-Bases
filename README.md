@@ -1,6 +1,6 @@
 # Round the Bases!
 
-An animated baseball lesson for young players (written for 2nd graders). Three parts:
+An animated baseball lesson for young players (written for 2nd graders). Four parts:
 
 ### 1. The race
 Five runners with the **same top speed** race on an overhead diamond. Each one can be switched on or off at any time, even mid-race.
@@ -23,7 +23,18 @@ Pick one of 8 hits (grounders to short, third and second, a bunt, a ball in the 
 
 The throw's timing is randomized inside a window that guarantees the right call is safe and the wrong call is out (tested).
 
-### 3. Banana Lab
+### 3. Run it yourself!
+The kid is the batter-runner. Press **Batter up!** (or Space) and a random hit comes off the bat: one of the 8 hits above, or one of 3 with a defensive mistake (an **overthrow** at first, a **rocket to the fence** where the fielder slips, a ball **into the left-field corner** the fielder can't find). Those last two give a real chance to run all the way home.
+
+- **Arrow keys** (or WASD, or the on-screen pad) steer. The field turns square so the keys match the base paths: → to 1st, ↑ to 2nd, ← to 3rd, ↓ home. **Space** slides.
+- Same running physics as the race: a sharp turn makes you brake and swing wide; a gentle banana keeps your speed.
+- A live defense fields the ball and throws to the base you're heading for. Force outs at 1st, tags everywhere else, protection when you run through 1st along the line, and missed bases don't count.
+- The **base coach** shouts advice from the coach's box ("Straight through first!", "Round 2nd! Keep going!", "Stay on 2nd!", "Slide!", "You missed 3rd!"). It only knows what a real coach could see. Turn **Coach help** off for a challenge, or turn on **Rookie speed** for younger kids.
+- Three outs make an inning; the board tracks outs, runs and total bases.
+
+Tests run a simulated runner that just follows the coach through every scenario: it is never out, scores every time on the fence ball, and often on the corner ball.
+
+### 4. Banana Lab
 A slider sets how far the runner swings out before first (0–20 ft). The path is colored by speed, a chart shows time to second for every width, and the runner can race the best banana. Too tight and you brake at the bag; too wide and you waste steps. The sweet spot is about 6–7 ft.
 
 ## Run it
@@ -68,7 +79,9 @@ Tweak the constants at the top of `physics.js` to explore: give Sam more grip, m
 index.html               page markup
 css/styles.css           styles (light + dark themes)
 js/physics.js            paths + speed model (pure, testable)
-js/hits.js               the 8 hits: ball flight, fielders, throw timing (pure, testable)
+js/hits.js               the hits: ball flight, fielders, throw timing (pure, testable)
+js/playsim.js            Run it yourself: runner control, live defense, base coach (pure, testable)
+js/play.js               Run it yourself: keyboard/touch input, drawing, innings
 js/field.js              canvas field renderer (one per canvas)
 js/stage.js              main field shared by the race and the game
 js/race.js               the race, runner toggles, scoreboard

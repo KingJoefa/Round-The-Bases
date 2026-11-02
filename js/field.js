@@ -10,17 +10,21 @@ const FENCE = 210;
 
 window.RTBField = function createField(canvas, opt) {
   const ctx = canvas.getContext("2d");
-  let W = 0, k = 1, ox = 0, oy = 0, lo = opt.lo, hi = opt.hi, cam = false;
+  let W = 0, k = 1, ox = 0, oy = 0, lo = opt.lo, hi = opt.hi, cam = false, orient = opt.orient || "diamond";
 
-  const S = (p) => { const u = (p[0] - p[1]) / Math.SQRT2, v = (p[0] + p[1]) / Math.SQRT2; return [ox + u * k, oy - v * k]; };
+  // "diamond": home at the bottom, 2nd at the top. "square": home bottom-left, so → is 1st, ↑ 2nd, ← 3rd, ↓ home.
+  const S = (p) => {
+    if (orient === "square") return [(p[0] - lo) * k, W - (p[1] - lo) * k];
+    const u = (p[0] - p[1]) / Math.SQRT2, v = (p[0] + p[1]) / Math.SQRT2; return [ox + u * k, oy - v * k];
+  };
   const css = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
-  function fit() { k = W / (Math.SQRT2 * (hi - lo)); ox = W / 2; oy = hi * Math.SQRT2 * k; }
+  function fit() { if (orient === "square") { k = W / (hi - lo); return; } k = W / (Math.SQRT2 * (hi - lo)); ox = W / 2; oy = hi * Math.SQRT2 * k; }
   function size() {
     const r = canvas.getBoundingClientRect(), dpr = window.devicePixelRatio || 1;
     W = r.width; canvas.width = Math.round(W * dpr); canvas.height = Math.round(W * dpr);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0); fit();
   }
-  function setRange(l, h) { lo = l; hi = h; fit(); }
+  function setRange(l, h, o) { lo = l; hi = h; orient = o || "diamond"; fit(); }
   function poly(list) { ctx.beginPath(); list.forEach((p, i) => { const s = S(p); i ? ctx.lineTo(s[0], s[1]) : ctx.moveTo(s[0], s[1]); }); ctx.closePath(); }
   function circle(c, r) { const s = S(c); ctx.beginPath(); ctx.arc(s[0], s[1], r * k, 0, Math.PI * 2); }
   const fair = () => poly([[0, 0], [600, 0], [600, 600], [0, 600]]);

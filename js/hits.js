@@ -36,6 +36,17 @@ const HITS = [
     land: [128, 52], spot: [148, 58], away: [165, 85], H: 0.1, cutoff: null, cover: "2B" },
 ];
 
+// Extra scenarios for "Run it yourself" only. Each has a defensive mistake, so a smart runner can take extra bases, even score.
+const ERROR_HITS = [
+  { id: "over", label: "Grounder, overthrow", say: "A grounder to short… and the throw sails past first base!", kind: "infield", fielder: "SS",
+    spot: [54, 106], error: "overthrow" },
+  { id: "park", label: "Rocket to the fence", say: "A rocket to the right-center fence! The fielder slips!", kind: "outfield", fielder: "RF",
+    land: [150, 90], spot: [178, 104], H: 0.12, cutoff: { who: "2B", at: [135, 80] }, cover: "SS", error: "slip", playPick: 13.6 },
+  { id: "corner", label: "Into the left-field corner", say: "A line drive down the left-field line! It rolls into the corner and the left fielder can't find it!", kind: "outfield", fielder: "LF",
+    land: [10, 150], spot: [9, 200], H: 0.12, cutoff: { who: "SS", at: [10, 140] }, cover: "2B", error: "lost", playPick: 15.2 },
+];
+const PLAY_HITS = HITS.concat(ERROR_HITS);
+
 // The runner's two choices for each kind of hit.
 let cache = null;
 function runners() {
@@ -132,7 +143,7 @@ function outcome(hit, Ta, call) {
 }
 const rightCall = (hit) => (hit.kind === "infield" ? "through" : "banana");
 
-const RTBHits = { HITS, FIELDERS, GLOVE1, GLOVE2, runners, arrival, window: window_, pickArrival, build, ballAt, fielderAt, outcome, rightCall };
+const RTBHits = { HITS, ERROR_HITS, PLAY_HITS, FIELDERS, GLOVE1, GLOVE2, runners, arrival, window: window_, pickArrival, build, ballAt, fielderAt, outcome, rightCall };
 if (typeof module !== "undefined" && module.exports) module.exports = RTBHits;
 root.RTBHits = RTBHits;
 })(typeof globalThis !== "undefined" ? globalThis : this);
